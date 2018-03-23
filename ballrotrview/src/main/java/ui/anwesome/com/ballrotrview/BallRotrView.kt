@@ -73,6 +73,7 @@ class BallRotrView(ctx : Context) : View(ctx) {
             val w = canvas.width.toFloat()
             val h = canvas.height.toFloat()
             val r = Math.min(w, h)/20
+            paint.color = Color.parseColor("#673AB7")
             val x_gap = Math.min(w,h)/3
             canvas.save()
             canvas.translate(w/2, h/2)
@@ -80,7 +81,10 @@ class BallRotrView(ctx : Context) : View(ctx) {
                 val factor = 1f - 2 * i
                 canvas.save()
                 canvas.rotate(90f * factor * state.scales[2])
-                canvas.drawCircle(x_gap * factor * state.scales[1] * (1 - state.scales[3]) , 0f, r * state.scales[0] * (1 - state.scales[4]), paint)
+                val mx : Float = x_gap * factor * state.scales[1] * (1 - state.scales[3])
+                val my : Float = 0f
+                val mr : Float = r * state.scales[0] * (1 - state.scales[4])
+                canvas.drawCircle(mx, my, mr, paint)
                 canvas.restore()
             }
             canvas.restore()
