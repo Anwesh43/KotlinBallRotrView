@@ -90,4 +90,22 @@ class BallRotrView(ctx : Context) : View(ctx) {
             state.startUpdating(startcb)
         }
     }
+    data class Renderer(var view : BallRotrView) {
+        val ballRotr : BallRotr = BallRotr(0)
+        val animator : Animator  = Animator(view)
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#212121"))
+            ballRotr.draw(canvas, paint)
+            animator.animate {
+                ballRotr.update {
+                    animator.stop()
+                }
+            }
+        }
+        fun handleTap() {
+            ballRotr.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
