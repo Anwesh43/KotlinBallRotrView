@@ -3,6 +3,7 @@ package ui.anwesome.com.ballrotrview
 /**
  * Created by anweshmishra on 23/03/18.
  */
+import android.app.Activity
 import android.view.*
 import android.content.*
 import android.graphics.*
@@ -107,6 +108,13 @@ class BallRotrView(ctx : Context) : View(ctx) {
             ballRotr.startUpdating {
                 animator.start()
             }
+        }
+    }
+    companion object {
+        fun create(activity : Activity) : BallRotrView {
+            val view : BallRotrView = BallRotrView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
