@@ -20,23 +20,23 @@ class BallRotrView(ctx : Context) : View(ctx) {
         return true
     }
     data class State(var prevScale : Float = 0f, var dir : Int = 0, var j : Int = 0) {
-        val scales : Array<Float> = arrayOf(0f, 0f, 0f, 0f, 0f)
+        var scales : Array<Float> = arrayOf(0f, 0f, 0f, 0f, 0f)
         fun update(stopcb : (Float) -> Unit) {
             scales[j] += dir * 0.1f
             if (Math.abs(scales[j] - prevScale) > 1) {
                 scales[j] = prevScale + dir
                 j += dir
-                if (j == scales.size || j == -1) {
-                    j -= dir
-                    scales[j] = prevScale + dir
+                if (j == scales.size) {
+                    j = 0
                     dir = 0
-                    stopcb(prevScale)
+                    stopcb(scales[j])
                 }
             }
         }
         fun startUpdating(startcb : () -> Unit) {
             if (dir == 0) {
-                dir = 1 - 2 * prevScale.toInt()
+                dir = 1
+                scales = arrayOf(0f, 0f, 0f, 0f, 0f)
                 startcb()
             }
         }
@@ -64,6 +64,30 @@ class BallRotrView(ctx : Context) : View(ctx) {
             if (animated) {
                 animated = false
             }
+        }
+    }
+    data class BallRotr(var i : Int, val state : State = State()) {
+        fun draw(canvas : Canvas, paint : Paint) {
+            val w = canvas.width.toFloat()
+            val h = canvas.height.toFloat()
+            val r = Math.min(w, h)/20
+            val x_gap = Math.min(w,h)/3
+            canvas.save()
+            canvas.translate(w/2, h/2)
+            for (i in 0..1) {
+                val factor = 1f - 2 * i
+                canvas.save()
+                canvas.rotate(90f * factor * state.scales[2])
+                canvas.drawCircle(x_gap * factor * state.scales[1] * (1 - state.scales[3]) , 0f, r * state.scales[0] * (1 - state.scales[4]), paint)
+                canvas.restore()
+            }
+            canvas.restore()
+        }
+        fun update(stopcb : (Float) -> Unit) {
+            state.update(stopcb)
+        }
+        fun startUpdating(startcb : () -> Unit) {
+            state.startUpdating(startcb)
         }
     }
 }
