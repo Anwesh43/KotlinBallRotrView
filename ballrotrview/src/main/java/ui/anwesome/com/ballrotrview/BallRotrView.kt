@@ -10,6 +10,10 @@ import android.graphics.*
 class BallRotrView(ctx : Context) : View(ctx) {
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     val renderer : Renderer = Renderer(this)
+    var onMovementCompleteListener : OnMovementCompleteListener ?= null
+    fun addOnCompleteListener(onCompleteListener : () -> Unit) {
+        onMovementCompleteListener = OnMovementCompleteListener(onCompleteListener)
+    }
     override fun onDraw(canvas : Canvas) {
         renderer.render(canvas, paint)
     }
@@ -105,6 +109,7 @@ class BallRotrView(ctx : Context) : View(ctx) {
             animator.animate {
                 ballRotr.update {
                     animator.stop()
+                    view.onMovementCompleteListener?.completeListener?.invoke()
                 }
             }
         }
@@ -121,4 +126,5 @@ class BallRotrView(ctx : Context) : View(ctx) {
             return view
         }
     }
+    data class OnMovementCompleteListener(var completeListener : () -> Unit)
 }
